@@ -1,25 +1,3 @@
-def sumatoria_maxima(arr: list, conjunto_sophia: list):
-    if(arr[0] > arr[-1]):
-        conjunto_sophia.append(arr.pop(0))
-    else:
-        conjunto_sophia.append(arr.pop(-1))
-    return
-
-def sumatoria_minima(arr: list, conjunto_mateo: list):
-    if(arr[0] > arr[-1]):
-        conjunto_mateo.append(arr.pop(-1))
-    else:
-        conjunto_mateo.append(arr.pop(0))
-    return
-
-def jugar(arr: list, conjunto_sophia: list, conjunto_mateo: list):
-    for _n in range(len(arr) // 2):
-        sumatoria_maxima(arr, conjunto_sophia)
-        sumatoria_minima(arr, conjunto_mateo)
-    if len(arr) == 1:
-        conjunto_sophia.append(arr.pop())
-    
-    return (conjunto_sophia, conjunto_mateo)
 # complejidad O(n)  n: cantidad de monedas
 # Devuelve la suma de sophie y mateo
 def jugar_fila_monedas_greedy(monedas):
@@ -52,22 +30,45 @@ def jugar_fila_monedas_greedy(monedas):
 
     return sophia_suma, mateo_puntos
 
+# Complejidad O(n), recorre la lista entera de monedas una vez
+def fila_de_monedas(monedas: list):
+    puntaje_sophia= 0
+    puntaje_mateo = 0
+    inicio = 0
+    fin = len(monedas) - 1
+    turno_sophia = True
 
+    while inicio <= fin:
+        if turno_sophia == True:
+            if monedas[inicio] > monedas[fin]:
+                puntaje_sophia += monedas[inicio]
+                inicio += 1
+            else:
+                puntaje_sophia += monedas[fin]
+                fin -= 1
+        else:
+            if monedas[inicio] > monedas[fin]:
+                puntaje_mateo += monedas[fin]
+                fin -= 1
+            else:
+                puntaje_mateo += monedas[inicio]
+                inicio += 1
+        turno_sophia = not turno_sophia
 
+    return puntaje_sophia, puntaje_mateo
 
+#Para probar los distintos txt
+def extraer_monedas_archivo(nombre_archivo: str) -> list:
+    arch = open(nombre_archivo, "r")
+    arch.readline()
+    linea_numeros = arch.readline()
+    numeros = [int(num) for num in linea_numeros.split(';')]
 
-
-
-
+    return numeros
 
 
 #Caso de ejemplo
-monedas = [72, 165, 794, 892, 880, 341, 882, 570, 679, 725, 979, 375, 459, 603, 112, 436, 587, 699, 681, 83]
-conjunto_sophia = []
-conjunto_mateo = []
-
-print(monedas)
-print(jugar(monedas, conjunto_sophia, conjunto_mateo))
-print(sum(conjunto_sophia), sum(conjunto_mateo))
+monedas = extraer_monedas_archivo("TP1/100.txt")
 
 print(jugar_fila_monedas_greedy([72, 165, 794, 892, 880, 341, 882, 570, 679, 725, 979, 375, 459, 603, 112, 436, 587, 699, 681, 83]))
+print(fila_de_monedas(monedas))
